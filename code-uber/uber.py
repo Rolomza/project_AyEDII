@@ -51,7 +51,10 @@ calles = [(e1,e2,100),(e1,e4,100),(e2,e5,50),(e3,e5,150),(e3,e6,100),(e4,e2,80),
 
 mapa_uber = Graph(esquinas,calles)
 
-mapa_uber.draw_graph()
+def create_map(local_path):
+    print("Hello world")
+
+#mapa_uber.draw_graph()
 
 #print(mapa_uber.adj_list[4])
 
@@ -106,24 +109,6 @@ más cercanos que esa persona puede pagar.
 de uno a otro.
 '''
 
-# class HashTable():
-#     def __init__(self,size):
-#         self.size = size
-#         self.table = [[] for _ in range(size)]
-    
-#     def _hash(self,address):
-#         return hash(address) % self.size
-    
-#     # def add_location(self,name,address,amount):
-#     #     print(address)
-
-
-#     #     # index = self._hash(address)
-#     #     # if name[0] != 'P' or name[0] != 'C':
-#     #     #     self.table[index].append((name,address))
-#     #     # else:
-#     #     #     self.table[index].append((name,address,amount))
-
 
 direcciones_mapa = {}
 
@@ -145,11 +130,6 @@ add_location(direcciones_mapa,'H1',[(e1,10),(e2,5)],None)
 add_location(direcciones_mapa,'C1',[(e1,8),(e2,5)],1200)
 add_location(direcciones_mapa,'P1',[(e3,10),(e5,5)],200)
 
-print(at_same_location(direcciones_mapa,'H1','C1'))
+#print(at_same_location(direcciones_mapa,'H1','C1'))
 
 
-
-# print(get_address(direcciones_mapa,'C1'))
-# print(at_same_location(direcciones_mapa,'H1','C1'))
-
-# print(direcciones_mapa.keys())
