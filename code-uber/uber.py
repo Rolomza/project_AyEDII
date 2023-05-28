@@ -38,25 +38,8 @@ class Graph:
             print()
 
 
-e1 = Vertex(1)
-e2 = Vertex(2)
-e3 = Vertex(3)
-e4 = Vertex(4)
-e5 = Vertex(5)
-e6 = Vertex(6)
-
-esquinas = [e1,e2,e3,e4,e5,e6]
-
-calles = [(e1,e2,100),(e1,e4,100),(e2,e5,50),(e3,e5,150),(e3,e6,100),(e4,e2,80),(e5,e4,120)]
-
-mapa_uber = Graph(esquinas,calles)
-
 def create_map(local_path):
     print("Hello world")
-
-#mapa_uber.draw_graph()
-
-#print(mapa_uber.adj_list[4])
 
 # DIRECCIONES
 
@@ -126,10 +109,5 @@ def at_same_location(map,name1,name2):
 
 
 
-add_location(direcciones_mapa,'H1',[(e1,10),(e2,5)],None)
-add_location(direcciones_mapa,'C1',[(e1,8),(e2,5)],1200)
-add_location(direcciones_mapa,'P1',[(e3,10),(e5,5)],200)
-
-#print(at_same_location(direcciones_mapa,'H1','C1'))
 
 
