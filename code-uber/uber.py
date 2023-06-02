@@ -1,3 +1,6 @@
+import os
+import re
+
 # MAPA:
 '''
 Consiste de dos conjuntos <E,C>. E es un conjunto de esquinas {e1,e2,e3, ….} y C las calles que conectan dichas esquinas.
@@ -39,58 +42,41 @@ class Graph:
 
 
 def create_map(local_path):
-    print("Hello world")
 
-# DIRECCIONES
+    with open(local_path) as file:
+        # Read the vertices line
+        vertices_line = file.readline().strip()
+        # Extract the vertices from the first line
+        vertices = vertices_line.split("=")[1].strip().strip("{}").split(",")
 
-'''
-Dirección: Consiste de un par de tuplas {<ex,d>, <ey,d>} donde e es una esquina dentro del mapa y d es un entero
-que representa la distancia de esa dirección con la esquina e.
-Ej: la dirección d1 = {<ex,10>, <ey,5>} indica que d1 esta en la siguiente posición dentro
-del mapa e1___________10____________d1_______5_____e2
-
-
-'''
-
-# UBICACIONES FIJAS
-
-'''
-Consiste de una tupla <Nombre, Dirección>. Donde Dirección representa
-una dirección posible en el mapa y Nombre puede ser cualquiera de estos caracteres.
-● H: hospital
-● A: almacén
-● T: tienda
-● S: supermercado
-● E: escuela
-● K: kiosco
-● I: iglesia
-
-'''
+        # Read the edges line
+        edges_line = file.readline().strip()
+        # Extract the vertices from the second line
+        edges_string = edges_line.split("=")[1].strip().strip("{}")
+        
+        # Regex edges expression
+        edges_string_regexed = re.findall(r'<(.*?)>', edges_string)
+        edges_list = []
+        for edge in edges_string_regexed:
+            edges_list.append(edge.split(","))
+        
+        print(vertices)
+        print(edges_list)
 
 
+def crear_dict_vertices(lista_elementos):
+    lista_vertices = {}
 
-# UBICACIONES MOVILES
+    for elemento in lista_elementos:
+        lista_vertices[elemento] = Vertex(elemento[1:])
+    
+    return lista_vertices
 
-'''
-Consiste de una 3-tupla <Nombre, Dirección, Monto>. Donde Dirección
-representa una dirección posible en el mapa, Monto un valor numérico para indicar
-saldo/tarifa y Nombre puede ser cualquiera de estos caracteres.
-● P: persona
-● C: auto
-'''
+create_map("mapa.txt")
 
-# INDICACIONES
 
-'''
-Si dada la configuración inicial de un mapa y la ubicación en el mismo de lugares fijos y
-componentes móviles (autos y personas). Implementar las siguientes funcionalidades:
-1. Cargar nuevos lugares, personas y autos dentro del mapa
-2. Conocer, dado un lugar, persona o auto la dirección del mismo.
-3. Conocer, dado una persona que se encuentra en el mapa cuáles son los 10 autos
-más cercanos que esa persona puede pagar.
-4. Conocer, dado dos direcciones en el mapa cual es el camino más cercano para llegar
-de uno a otro.
-'''
+
+
 
 
 direcciones_mapa = {}
