@@ -27,11 +27,10 @@ class Graph:
         self.adj_list = [[] for _ in range(len(self.vertices_list))]
         
         for i in range(len(edges_list)):
-            edge_u = edges_list[i][0]
-            edge_v = edges_list[i][1]
-            weight = edges_list[i][2]
-            self.adj_list[edge_u.key - 1].append((edge_v,weight))
-            #self.adj_list[edges_list[i][1].key - 1].append(edges_list[i][0])
+            vertex_u = self.vertices_list[edges_list[i][0]]
+            vertex_v = self.vertices_list[edges_list[i][1]]
+            weight_u_v = int(edges_list[i][2])
+            self.adj_list[vertex_u.key - 1].append((vertex_v,weight_u_v))
     
     def draw_graph(self):
         for i in range(len(self.adj_list)):
@@ -42,41 +41,69 @@ class Graph:
 
 
 def create_map(local_path):
+    try:
+        with open(local_path) as file:
+            # Read the vertices line
+            vertices_line = file.readline().strip()
+            # Extract the vertices from the first line
+            vertices = vertices_line.split("=")[1].strip().strip("{}").split(",")
 
-    with open(local_path) as file:
-        # Read the vertices line
-        vertices_line = file.readline().strip()
-        # Extract the vertices from the first line
-        vertices = vertices_line.split("=")[1].strip().strip("{}").split(",")
-
-        # Read the edges line
-        edges_line = file.readline().strip()
-        # Extract the vertices from the second line
-        edges_string = edges_line.split("=")[1].strip().strip("{}")
+            # Read the edges line
+            edges_line = file.readline().strip()
+            # Extract the vertices from the second line
+            edges_string = edges_line.split("=")[1].strip().strip("{}")
+            # Regex edges expression
+            edges_string_regexed = re.findall(r'<(.*?)>', edges_string)
         
-        # Regex edges expression
-        edges_string_regexed = re.findall(r'<(.*?)>', edges_string)
         edges_list = []
         for edge in edges_string_regexed:
             edges_list.append(edge.split(","))
-        
-        print(vertices)
-        print(edges_list)
 
+        # Ordeno vertices
+        sorted_vertices = sorted(vertices)
+        # Creo dict de objetos vertex
+        vertices_objects_dict = instanciar_obj_vertices(sorted_vertices)
 
-def crear_dict_vertices(lista_elementos):
-    lista_vertices = {}
+        # Creo mapa
+        uber_map = Graph(vertices_objects_dict,edges_list)
+        #uber_map.draw_graph()
+        hacer_escritura(uber_map)
+        print("Map created successfully")
+    except FileNotFoundError:
+        print('Error: No such file or directory ' + local_path)
 
-    for elemento in lista_elementos:
-        lista_vertices[elemento] = Vertex(elemento[1:])
+def instanciar_obj_vertices(lista_elementos):
+    dict_vertices = {}
+
+    for i in range(len(lista_elementos)):
+        dict_vertices[lista_elementos[i]] = Vertex(int(lista_elementos[i][1:]))
+        #lista_vertices.append(Vertex(lista_elementos[i][1:]))
     
-    return lista_vertices
+    return dict_vertices
 
-create_map("mapa.txt")
+# Funciones para serializar y guardar en disco
+
+def hacer_escritura(objeto):
+    import pickle
+
+    with open('mapa_binario.bin','wb') as file:
+        pickle.dump(objeto,file)
+
+def hacer_lectura():
+    import pickle
+
+    with open('mapa_binario.bin','br') as file:
+        objeto = pickle.load(file)
+    return objeto
 
 
+# Llamo la funcion para crear el mapa y guardarlo en disco a partir de un archivo de texto dado
 
+create_map("./code-uber/mapa.txt")
 
+# Cargo el mapa desde su serializacion en disco
+
+mapa1 = hacer_lectura()
 
 
 direcciones_mapa = {}
