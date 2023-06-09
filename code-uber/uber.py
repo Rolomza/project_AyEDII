@@ -125,7 +125,7 @@ def load_fix_element(elements_map,name,address):
 
 def load_movil_element(map,name,address,amount):
     print("Movil element loaded!")
-    map_elements[name] = {'address':address,'amount': amount}
+    #map_elements[name] = {'address':address,'amount': amount}
 
 def get_address(map,name):
     address = map[name]['address']
