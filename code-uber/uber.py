@@ -1,4 +1,4 @@
-import os
+import sys
 import re
 
 # MAPA:
@@ -70,7 +70,7 @@ def create_map(local_path):
         hacer_escritura(uber_map)
         print("Map created successfully")
     except FileNotFoundError:
-        print('Error: No such file or directory ' + local_path)
+        print('Error: No such file or directory.')
 
 def instanciar_obj_vertices(lista_elementos):
     dict_vertices = {}
@@ -99,14 +99,18 @@ def hacer_lectura():
 
 # Llamo la funcion para crear el mapa y guardarlo en disco a partir de un archivo de texto dado
 
-create_map("./code-uber/mapa.txt")
+#create_map("mapa.txt")
 
 # Cargo el mapa desde su serializacion en disco
 
-mapa1 = hacer_lectura()
+#mapa1 = hacer_lectura()
 
+map_elements = {}
 
-direcciones_mapa = {}
+def load_fix_element(name,address):
+    map_file = hacer_lectura()
+    print(map_file.edges_list)
+    map_elements[name] = {'address': address}
 
 def add_location(map,name,address,amount):
     map[name] = {'address':address,'amount': amount}
@@ -120,7 +124,20 @@ def at_same_location(map,name1,name2):
         return True
     return False
 
-
+try:
+    if(sys.argv[1] == "-create_map"):
+        try:
+            if (sys.argv[2] != ""):
+                local_path = sys.argv[2]
+                create_map(local_path)
+        except IndexError:
+            print("Local path not found. Insert -create_map <local_path>")
+    else:
+        print("Not a valid function. Insert -create_map to start...")
+except IndexError:
+    print("Not a valid function.")
+    
+    
 
 
 
