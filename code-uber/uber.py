@@ -110,17 +110,19 @@ def load_fix_element(elements_map,name,address):
     uber_map = hacer_lectura('mapa_serializado.bin')
 
     # Valido que no exista el elemento en el mapa
-    if (name not in elements_map):
-        if (check_element_name(name)):
-            if (check_element_address(uber_map.edges_list,address)):
+    if (check_name_validity(name)):
+        if (name not in elements_map):
+            parsed_address = parse_address_input(address)
+            if (check_element_address(uber_map,parsed_address)):
                 elements_map[name] = {'address': address}
                 print("Fixed element loaded!")
             else:
                 print('Not a valid address in map')
         else:
-            print('Not a valid name for a map element')
+            print('The element already exists in map.')
     else:
-        print('The element already exists in map.')
+        print('Not a valid name for a map element')
+        
 
 def load_movil_element(map,name,address,amount):
     print("Movil element loaded!")
@@ -136,30 +138,47 @@ def at_same_location(map,name1,name2):
     else:
         return False
 
-def check_element_name(name):
+def check_name_validity(name):
     pattern = r'[HATSEKIPC]\d+'
     valid_name = re.match(pattern,name)
     if valid_name:
         return True
     else:
         return False
-    
-def check_element_address(map_adj_list,address):
-    address = [('e1',5),('e2',10)]
-    vertex_u = address[0]
-    print(vertex_u)
-    
 
+def parse_address_input(address_input):
+    pattern = r"<(\w+),(\d+)>"
+    matches = re.findall(pattern, address_input)
+    result = [(match[0], int(match[1])) for match in matches]
+    return result
+    
+def check_element_address(map,address):
+    # Address in form [('ex',d1),('ey',d2)]
+
+    vertex_u = map.vertices_list[address[0][0]]
+    vertex_v = map.vertices_list[address[1][0]]
+
+    for element in map.adj_list[vertex_u.key - 1]:
+        vertex = element[0]
+        if (vertex == vertex_v):
+            return True
+    print("The street doesn't exist")
+    return False
 
 
 create_map('mapa.txt')
 uber_map = hacer_lectura('mapa_serializado.bin')
 uber_map.draw_graph()
 elements_map = {}
-address = [('e1',5),('e2',10)]
+#address = "{<e2,5>,<e6,10>}"
 
-print(address[0][0])
-#print(uber_map.adj_list[0][0][0].key)
+address1 = [('e2',5),('e6',10)]
+
+address_input = sys.argv[1]
+print(address_input)
+print(parse_address_input(address_input))
+
+print(sys.argv)
 
 try:
     is_map_created = False
