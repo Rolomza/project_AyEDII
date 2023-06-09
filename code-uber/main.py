@@ -1,4 +1,4 @@
-from uber import Graph, Vertex
+from uber import create_map, hacer_lectura,Graph
 from dijkstra import *
 
 '''
@@ -17,7 +17,7 @@ calles = [(e1,e2,100),(e1,e4,100),(e2,e5,50),(e3,e5,150),(e3,e6,100),(e4,e2,80),
 mapa_uber = Graph(esquinas,calles)
 
 mapa_uber.draw_graph()
-'''
+
 e1 = Vertex(1)
 e2 = Vertex(2)
 e3 = Vertex(3)
@@ -32,11 +32,19 @@ mapa_uber = Graph(esquinas,calles)
 
 mapa_uber.draw_graph()
 
+'''
+create_map("./code-uber/mapa.txt")
+mapa1 = hacer_lectura()
+mapa1.draw_graph()
+listv = list(mapa1.vertices_list.values())
+#dijkstra(mapa1,listv[0])
+#printStatus(listv)
+paths = calculate_path(mapa1)
+print(paths)
 
-
-printStatus(mapa_uber.vertices_list)
-dijkstra(mapa_uber,e1)
-printStatus(mapa_uber.vertices_list)
+#printStatus(mapa1.vertices_list)
+#dijkstra(mapa1,list(mapa1.vertices_list.values())[0])
+#printStatus(mapa1.vertices_list)
 
 #print(mapa_uber.adj_list[4])
 

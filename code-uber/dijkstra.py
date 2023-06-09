@@ -2,7 +2,7 @@
 
 #TODO Crear funcion que tome la direccion de llegada y recorra a traves de la variable parent hasta llegar a la posicion de salida
 def dijkstra(G, s):
-    initRelax(G, s)
+    s.distance = 0 #Init Relax
     Q = []
     Q.append(s)
     while len(Q) > 0:
@@ -24,24 +24,34 @@ def dijkstra(G, s):
         u.color = 'green'
 
 
+def calculate_path(G):
+    verObj_list = list(G.vertices_list.values())
+    #Creo la matriz |V| x |V|
+    dijkstraMatrix = [[] for _ in range(len(verObj_list))]
 
 
 
-#Establece todos los vertices excepto s con distancia(d) infinito y sin predecesor(pi)
-#s poseera distancia(d) 0
-def initRelax(G,s):
-    for vertex in G.vertices_list:
-        if vertex == s:
-            vertex.distance = 0
-        else:
-            vertex.distance = 'infinite'
+    #Recorro la lista de vertices y aplico dijktra
+    for Avertex in verObj_list:
+
+        dijkstra(G,Avertex)
+        #Almaceno el estado del grafo después de dijkstra
+        for Bvertex in verObj_list:
+            dijkstraMatrix[Avertex.key-1].append((Bvertex.distance, Bvertex.parent))
+        printStatus(verObj_list)
+        print('=======')    
+        #Reinicio el grafo
+        resetGraph(verObj_list) 
+
+    return dijkstraMatrix
+
 
 #Devuelve los vertices a sus estados limpios
-def resetGraph(G):
-    for vertex in G.vertices_list:
+def resetGraph(verList):
+    for vertex in verList:
         vertex.color = None
         vertex.parent = None
-        vertex.distance = None
+        vertex.distance = 'infinite'
         vertex.f = None
 
 #Imprime el estado en el que se encuentra cada vertice

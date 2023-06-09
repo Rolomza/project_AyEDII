@@ -14,7 +14,7 @@ class Vertex:
         self.key = key
     color = None
     parent = None
-    distance = None
+    distance = 'infinite'
     f = None
 
 class Graph:
@@ -58,7 +58,6 @@ def create_map(local_path):
         edges_list = []
         for edge in edges_string_regexed:
             edges_list.append(edge.split(","))
-
         # Ordeno vertices
         sorted_vertices = sorted(vertices)
         # Creo dict de objetos vertex
