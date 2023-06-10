@@ -38,8 +38,8 @@ def calculate_path(G):
         #Almaceno el estado del grafo después de dijkstra
         for Bvertex in verObj_list:
             dijkstraMatrix[Avertex.key-1].append((Bvertex.distance, Bvertex.parent))
-        printStatus(verObj_list)
-        print('=======')    
+        #printStatus(verObj_list)
+        #print('=======')    
         #Reinicio el grafo
         resetGraph(verObj_list) 
 

@@ -1,5 +1,6 @@
 import sys
 import re
+from dijkstra import calculate_path
 
 # MAPA:
 '''
@@ -69,8 +70,10 @@ def create_map(local_path):
         # Creo mapa
         uber_map = Graph(vertices_objects_dict,edges_list)
         #uber_map.draw_graph()
-        hacer_escritura(uber_map)
+        hacer_escritura(uber_map,'mapa_serializado.bin')
         print("Map created successfully")
+        path = calculate_path(uber_map)
+        hacer_escritura(path,'camino_serializado.bin')
         is_map_created = True
         return is_map_created
     except FileNotFoundError:
@@ -88,12 +91,14 @@ def instanciar_obj_vertices(lista_elementos):
 
 # Funciones para serializar y guardar en disco
 
-def hacer_escritura(objeto):
+#Realiza la escritura de un objeto en un archivo local_path
+def hacer_escritura(objeto,local_path):
     import pickle
 
-    with open('mapa_serializado.bin','wb') as file:
+    with open(local_path,'wb') as file:
         pickle.dump(objeto,file)
 
+#Realiza la lectura de un objeto desde un archivo local_path
 def hacer_lectura(local_path):
     import pickle
 
@@ -164,7 +169,7 @@ def check_element_address(map,address):
     print("The street doesn't exist")
     return False
 
-
+'''
 create_map('mapa.txt')
 uber_map = hacer_lectura('mapa_serializado.bin')
 uber_map.draw_graph()
@@ -200,3 +205,4 @@ try:
 
 except IndexError:
     print("Insert -creat_map <local_path> to start.")
+'''

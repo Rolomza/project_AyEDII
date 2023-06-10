@@ -34,13 +34,12 @@ mapa_uber.draw_graph()
 
 '''
 create_map("./code-uber/mapa.txt")
-mapa1 = hacer_lectura()
+mapa1 = hacer_lectura('mapa_serializado.bin')
 mapa1.draw_graph()
-listv = list(mapa1.vertices_list.values())
 #dijkstra(mapa1,listv[0])
 #printStatus(listv)
-paths = calculate_path(mapa1)
-print(paths)
+path = hacer_lectura('camino_serializado.bin')
+print(path)
 
 #printStatus(mapa1.vertices_list)
 #dijkstra(mapa1,list(mapa1.vertices_list.values())[0])
