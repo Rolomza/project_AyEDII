@@ -122,17 +122,19 @@ def load_fix_element(name,address):
         print('Not a valid name for a fixed map element')
         
 
-def load_movil_element(elements_dict,name,address,amount):
+def load_movil_element(name,address,amount):
 
-    uber_map = read_from_disk('mapa_serializado.bin')
+    uber_map = read_from_disk('map_serialized.bin')
+    map_elements = read_from_disk('map_elements_serialized.bin')
 
     if (check_name_validity(name,'movil')):
-        if (name not in elements_dict):
+        if (name not in map_elements):
             parsed_address = parse_address_input(address)
             if (check_element_address(uber_map,parsed_address)):
                 if amount >= 0:
-                    elements_dict[name] = {'address': address, 'amount': amount}
-                    print("Movil element loaded!")
+                    map_elements[name] = {'address': parsed_address, 'amount': amount}
+                    write_to_disk(map_elements,'map_elements')
+                    print(f"Movil element {name} with amount {amount} loaded with address {address} ")
                 else:
                     print('The amount must be at least 0')
             else:
@@ -196,6 +198,7 @@ uber_map.draw_graph()
 address_input = "<e8,20> <e10,30>"
 
 load_fix_element("H1", "<e8,20> <e10,30>")
+load_movil_element("P1", "<e8,10> <e10,40>", 2000)
 map_elements = read_from_disk('map_elements_serialized.bin')
 print(map_elements)
 
