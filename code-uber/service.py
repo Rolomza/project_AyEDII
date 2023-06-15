@@ -22,16 +22,18 @@ def create_trip(map,person,location):
         #A los vehiculos restantes les obtengo su vertice referencia
         cars_ref = [] #Almacenara tuplas (vehiculos,vertices)
         for car in map_cars_key:
-            car_vertexpair = [map_elements[car]['address'][0][0],map_elements[car]['address'][1][0]]
-            cars_ref.append((car,car_vertex_ref(map_elements,car,car_vertexpair)))
+            car_vertexpair = (map_elements[car]['address'][0][0],map_elements[car]['address'][1][0])
+            cars_ref.append([car,car_vertex_ref(map_elements,car,car_vertexpair)])
         #print(cars_ref)
 
         path_matrix = read_from_disk('path_matrix_serialized.bin') #Leo de memoria la matriz de caminos
-        #print(person_vertex)
+        print(person_vertex)
         #Veo las distancias de los caminos correspondientes a la referencia de los autos
         distance_list = []
         for v in cars_ref:
-            v.append(path_matrix[person_vertex-1][v[1]-1])
+            v.append(path_matrix[person_vertex-1][v[1]-1][0])
+        cars_ref = sorted(cars_ref, key=lambda x: x[2])
+        #print(path_matrix)
         print(cars_ref)
         #print(path_matrix[9])
 

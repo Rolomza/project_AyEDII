@@ -74,6 +74,9 @@ def create_map(local_path):
         map_elements = {}
         write_to_disk(map_elements,'map_elements')
 
+        path_matrix = calculate_path(uber_map)
+        write_to_disk(path_matrix,'path_matrix')
+
         print("Map created successfully")
         
     except FileNotFoundError:

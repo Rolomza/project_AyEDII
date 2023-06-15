@@ -1,4 +1,4 @@
-
+import re
 #TODO Crear funcion que tome la direccion de llegada y recorra a traves de la variable parent hasta llegar a la posicion de salida
 def dijkstra(G, s):
     s.distance = 0 #Init Relax
@@ -24,7 +24,10 @@ def dijkstra(G, s):
 
 
 def calculate_path(G):
-    verObj_list = list(G.vertices_list.values())
+    Discver_sorted = {k: v for k, v in sorted(G.vertices_list.items(), key=lambda x: [int(c) if c.isdigit() else c for c in re.split('(\d+)', x[0])])}
+    print(Discver_sorted)
+    verObj_list = list(Discver_sorted.values())
+    #print(verObj_list)
     #Creo la matriz |V| x |V|
     dijkstraMatrix = [[] for _ in range(len(verObj_list))]
 
