@@ -1,6 +1,7 @@
 import sys
 import os
 import re
+from dijkstra import calculate_path
 
 # MAPA:
 '''
@@ -73,6 +74,9 @@ def create_map(local_path):
         # Creo diccionario para los elementos del mapa
         map_elements = {}
         write_to_disk(map_elements,'map_elements')
+
+        path_matrix = calculate_path(uber_map)
+        write_to_disk(path_matrix,'path_matrix')
 
         print("Map created successfully")
         
@@ -192,7 +196,7 @@ def check_element_address(map,address):
     print("There is no street connecting these corners.")
     return False
 
-
+'''
 create_map('mapa.txt')
 uber_map = read_from_disk('map_serialized.bin')
 uber_map.draw_graph()
@@ -247,4 +251,9 @@ load_movil_element("P1", "<e8,10> <e10,40>", 2000)
 #         print("You must create a map first. Insert -create_map <local_path> to start.")
 
 # except IndexError:
+<<<<<<< HEAD
 #     print("Insert -create_map <local_path> to start.")
+=======
+#     print("Insert -creat_map <local_path> to start.")
+'''
+>>>>>>> f5eeb1aeec3dc8c9392bc863659955691c7a2511
