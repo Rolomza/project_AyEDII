@@ -83,7 +83,6 @@ def instantiate_vertex_objects(elements_list):
 
     for i in range(len(elements_list)):
         dict_vertices[elements_list[i]] = Vertex(int(elements_list[i][1:]))
-        #lista_vertices.append(Vertex(lista_elementos[i][1:]))
     
     return dict_vertices
 
@@ -103,16 +102,18 @@ def read_from_disk(local_path):
 
 # Los elementos fijos y moviles seran guardados en un diccionario de python
 
-def load_fix_element(elements_dict,name,address):
+def load_fix_element(name,address):
     # Asi como leo el mapa deberia tambien guardar en disco el diccionario de elementos?
-    uber_map = read_from_disk('mapa_serializado.bin')
+    uber_map = read_from_disk('map_serialized.bin')
+    map_elements = read_from_disk('map_elements_serialized.bin')
     # Valido que no exista el elemento en el mapa
     if (check_name_validity(name,'fixed')):
-        if (name not in elements_dict):
+        if (name not in map_elements):
             parsed_address = parse_address_input(address)
             if (check_element_address(uber_map,parsed_address)):
-                elements_dict[name] = {'address': address}
-                print("Fixed element loaded!")
+                map_elements[name] = {'address': parsed_address}
+                write_to_disk(map_elements,'map_elements')
+                print(f"Fixed element {name} loaded with address: {address}")
             else:
                 print('Not a valid address in map')
         else:
@@ -172,7 +173,6 @@ def parse_address_input(address_input):
     
 def check_element_address(map,address):
     # Address in form [('ex',d1),('ey',d2)]
-    print(address)
     vertex_u = map.vertices_list[address[0][0]]
     vertex_v = map.vertices_list[address[1][0]]
 
@@ -193,8 +193,12 @@ def check_element_address(map,address):
 create_map('mapa.txt')
 uber_map = read_from_disk('map_serialized.bin')
 uber_map.draw_graph()
-# map_elements = {}
-# address_input = "<e8,20> <e10,30>"
+address_input = "<e8,20> <e10,30>"
+
+load_fix_element("H1", "<e8,20> <e10,30>")
+map_elements = read_from_disk('map_elements_serialized.bin')
+print(map_elements)
+
 
 # load_movil_element(map_elements,'C1',"<e2,20> <e6,30>",2000)
 # print(map_elements)
