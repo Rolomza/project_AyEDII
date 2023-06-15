@@ -197,10 +197,10 @@ uber_map = read_from_disk('map_serialized.bin')
 uber_map.draw_graph()
 address_input = "<e8,20> <e10,30>"
 
-load_fix_element("H1", "<e8,20> <e10,30>")
-load_movil_element("P1", "<e8,10> <e10,40>", 2000)
-map_elements = read_from_disk('map_elements_serialized.bin')
-print(map_elements)
+# load_fix_element("H1", "<e8,20> <e10,30>")
+# load_movil_element("P1", "<e8,10> <e10,40>", 2000)
+# map_elements = read_from_disk('map_elements_serialized.bin')
+# print(map_elements)
 
 
 # load_movil_element(map_elements,'C1',"<e2,20> <e6,30>",2000)
