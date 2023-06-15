@@ -1,5 +1,4 @@
 
-
 #TODO Crear funcion que tome la direccion de llegada y recorra a traves de la variable parent hasta llegar a la posicion de salida
 def dijkstra(G, s):
     s.distance = 0 #Init Relax
@@ -28,8 +27,6 @@ def calculate_path(G):
     verObj_list = list(G.vertices_list.values())
     #Creo la matriz |V| x |V|
     dijkstraMatrix = [[] for _ in range(len(verObj_list))]
-
-
 
     #Recorro la lista de vertices y aplico dijktra
     for Avertex in verObj_list:
@@ -61,3 +58,5 @@ def printStatus(V):
             print(f'|v:{i+1}, d:{V[i].distance}, pi:{V[i].parent.key}| ')
         else:
             print(f'|v:{i+1}, d:{V[i].distance}, pi:{V[i].parent}| ')
+
+

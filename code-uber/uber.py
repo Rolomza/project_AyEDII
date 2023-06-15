@@ -44,7 +44,6 @@ class Graph:
 
 
 def create_map(local_path):
-    is_map_created = False
     try:
         with open(local_path) as file:
             # Read the vertices line
@@ -65,72 +64,86 @@ def create_map(local_path):
         # Ordeno vertices
         sorted_vertices = sorted(vertices)
         # Creo dict de objetos vertex
-        vertices_objects_dict = instanciar_obj_vertices(sorted_vertices)
+        vertices_objects_dict = instantiate_vertex_objects(sorted_vertices)
 
         # Creo mapa
         uber_map = Graph(vertices_objects_dict,edges_list)
-        #uber_map.draw_graph()
-        hacer_escritura(uber_map,'mapa_serializado.bin')
+        write_to_disk(uber_map,'map')
+
+        # Creo diccionario para los elementos del mapa
+        map_elements = {}
+        write_to_disk(map_elements,'map_elements')
+
         print("Map created successfully")
-        path = calculate_path(uber_map)
-        hacer_escritura(path,'camino_serializado.bin')
-        is_map_created = True
-        return is_map_created
+        
     except FileNotFoundError:
         print('Error: No such file or directory.')
-        return is_map_created
 
-def instanciar_obj_vertices(lista_elementos):
+def instantiate_vertex_objects(elements_list):
     dict_vertices = {}
 
-    for i in range(len(lista_elementos)):
-        dict_vertices[lista_elementos[i]] = Vertex(int(lista_elementos[i][1:]))
-        #lista_vertices.append(Vertex(lista_elementos[i][1:]))
+    for i in range(len(elements_list)):
+        dict_vertices[elements_list[i]] = Vertex(int(elements_list[i][1:]))
     
     return dict_vertices
 
-# Funciones para serializar y guardar en disco
+# Functions for writing to and reading from disk
 
-#Realiza la escritura de un objeto en un archivo local_path
-def hacer_escritura(objeto,local_path):
+def write_to_disk(data, objectType):
     import pickle
+    file_name = objectType + '_serialized.bin'
+    with open(file_name,'wb') as file:
+        pickle.dump(data,file)
 
-    with open(local_path,'wb') as file:
-        pickle.dump(objeto,file)
-
-#Realiza la lectura de un objeto desde un archivo local_path
-def hacer_lectura(local_path):
+def read_from_disk(local_path):
     import pickle
-
     with open(local_path,'br') as file:
-        objeto = pickle.load(file)
-    return objeto
+        data = pickle.load(file)
+    return data
 
 # Los elementos fijos y moviles seran guardados en un diccionario de python
 
-def load_fix_element(elements_map,name,address):
-
+def load_fix_element(name,address):
     # Asi como leo el mapa deberia tambien guardar en disco el diccionario de elementos?
-    uber_map = hacer_lectura('mapa_serializado.bin')
-
+    uber_map = read_from_disk('map_serialized.bin')
+    map_elements = read_from_disk('map_elements_serialized.bin')
     # Valido que no exista el elemento en el mapa
-    if (check_name_validity(name)):
-        if (name not in elements_map):
+    if (check_name_validity(name,'fixed')):
+        if (name not in map_elements):
             parsed_address = parse_address_input(address)
             if (check_element_address(uber_map,parsed_address)):
-                elements_map[name] = {'address': address}
-                print("Fixed element loaded!")
+                map_elements[name] = {'address': parsed_address}
+                write_to_disk(map_elements,'map_elements')
+                print(f"Fixed element {name} loaded with address: {address}")
             else:
                 print('Not a valid address in map')
         else:
             print('The element already exists in map.')
     else:
-        print('Not a valid name for a map element')
+        print('Not a valid name for a fixed map element')
         
 
-def load_movil_element(map,name,address,amount):
-    print("Movil element loaded!")
-    #map_elements[name] = {'address':address,'amount': amount}
+def load_movil_element(name,address,amount):
+
+    uber_map = read_from_disk('map_serialized.bin')
+    map_elements = read_from_disk('map_elements_serialized.bin')
+
+    if (check_name_validity(name,'movil')):
+        if (name not in map_elements):
+            parsed_address = parse_address_input(address)
+            if (check_element_address(uber_map,parsed_address)):
+                if amount >= 0:
+                    map_elements[name] = {'address': parsed_address, 'amount': amount}
+                    write_to_disk(map_elements,'map_elements')
+                    print(f"Movil element {name} with amount {amount} loaded with address {address} ")
+                else:
+                    print('The amount must be at least 0')
+            else:
+                print('Not a valid address in map')
+        else:
+            print('The element already exists in map.')
+    else:
+        print('Not a valid name for a movil map element')
 
 def get_address(map,name):
     address = map[name]['address']
@@ -142,9 +155,14 @@ def at_same_location(map,name1,name2):
     else:
         return False
 
-def check_name_validity(name):
-    pattern = r'[HATSEKIPC]\d+'
-    valid_name = re.match(pattern,name)
+def check_name_validity(name,type):
+    if (type == 'fixed'):
+        pattern = r'[HATSEKI]\d+'
+        valid_name = re.match(pattern,name)
+    if (type == 'movil'):
+        pattern = r'[PC]\d+'
+        valid_name = re.match(pattern,name)
+    
     if valid_name:
         return True
     else:
@@ -158,7 +176,6 @@ def parse_address_input(address_input):
     
 def check_element_address(map,address):
     # Address in form [('ex',d1),('ey',d2)]
-
     vertex_u = map.vertices_list[address[0][0]]
     vertex_v = map.vertices_list[address[1][0]]
 
@@ -166,43 +183,51 @@ def check_element_address(map,address):
         vertex = element[0]
         if (vertex == vertex_v):
             return True
-    print("The street doesn't exist")
+    
+    for element in map.adj_list[vertex_v.key - 1]:
+        vertex = element[0]
+        if (vertex == vertex_u):
+            return True
+        
+    print("There is no street connecting these corners.")
     return False
 
 '''
 create_map('mapa.txt')
-uber_map = hacer_lectura('mapa_serializado.bin')
+uber_map = read_from_disk('map_serialized.bin')
 uber_map.draw_graph()
-elements_map = {}
-#address = "{<e2,5>,<e6,10>}"
+address_input = "<e8,20> <e10,30>"
 
-address1 = [('e2',5),('e6',10)]
+# load_fix_element("H1", "<e8,20> <e10,30>")
+# load_movil_element("P1", "<e8,10> <e10,40>", 2000)
+# map_elements = read_from_disk('map_elements_serialized.bin')
+# print(map_elements)
 
-address_input = sys.argv[1]
-print(address_input)
-print(parse_address_input(address_input))
 
-print(sys.argv)
+# load_movil_element(map_elements,'C1',"<e2,20> <e6,30>",2000)
+# print(map_elements)
 
-try:
-    is_map_created = False
-    if(sys.argv[1] == "-create_map"):
-        try:
-            if (sys.argv[2] != ""):
-                local_path = sys.argv[2]
-                is_map_created = create_map(local_path)
-        except IndexError:
-            print("Local path not found. Insert -create_map <local_path>")
+# print(sys.argv)
 
-    if(sys.argv[1] == "-load_fix_element"):
-        print('load fix function, is mapa created:', is_map_created)
-        # if(is_map_created):
-        #     if(sys.argv[1] == "-load_fix_element"):
-        #         uber_map = hacer_lectura('mapa_serializado.bin')
-        #         load_fix_element(uber_map,sys.argv[2],sys.argv[3])
-    else:
-        print("You must create a map first. Insert -create_map <local_path> to start.")
+# try:
+#     is_map_created = False
+#     if(sys.argv[1] == "-create_map"):
+#         try:
+#             if (sys.argv[2] != ""):
+#                 local_path = sys.argv[2]
+#                 is_map_created = create_map(local_path)
+#         except IndexError:
+#             print("Local path not found. Insert -create_map <local_path>")
 
-except IndexError:
-    print("Insert -creat_map <local_path> to start.")
+#     if(sys.argv[1] == "-load_fix_element"):
+#         print('load fix function, is mapa created:', is_map_created)
+#         # if(is_map_created):
+#         #     if(sys.argv[1] == "-load_fix_element"):
+#         #         uber_map = hacer_lectura('mapa_serializado.bin')
+#         #         load_fix_element(uber_map,sys.argv[2],sys.argv[3])
+#     else:
+#         print("You must create a map first. Insert -create_map <local_path> to start.")
+
+# except IndexError:
+#     print("Insert -creat_map <local_path> to start.")
 '''
