@@ -131,12 +131,12 @@ def load_movil_element(name,address,amount):
 
     uber_map = read_from_disk('map_serialized.bin')
     map_elements = read_from_disk('map_elements_serialized.bin')
-
+    
     if (check_name_validity(name,'movil')):
         if (name not in map_elements):
             parsed_address = parse_address_input(address)
             if (check_element_address(uber_map,parsed_address)):
-                if amount >= 0:
+                if (amount >= 0):
                     map_elements[name] = {'address': parsed_address, 'amount': amount}
                     write_to_disk(map_elements,'map_elements')
                     print(f"Movil element {name} with amount {amount} loaded with address {address} ")
@@ -197,58 +197,61 @@ def check_element_address(map,address):
     return False
 
 
-create_map('mapa.txt')
-uber_map = read_from_disk('map_serialized.bin')
-uber_map.draw_graph()
+# create_map('mapa.txt')
+# uber_map = read_from_disk('map_serialized.bin')
+# uber_map.draw_graph()
 
 # load_fix_element("H1", "<e8,20> <e10,30>")
-load_movil_element("P1", "<e8,10> <e10,40>", 2000)
+# load_movil_element("P1", "<e8,10> <e10,40>", 2000)
 # map_elements = read_from_disk('map_elements_serialized.bin')
 # print(map_elements)
 
 
 
 
-# try:
-#     if(sys.argv[1] == "-create_map"):
-#         try:
-#             if (sys.argv[2] != ""):
-#                 local_path = sys.argv[2]
-#                 create_map(local_path)
-#         except:
-#             print("Local path not found. Insert -create_map <local_path>")
+try:
+    if(sys.argv[1] == "-create_map"):
+        try:
+            if (sys.argv[2] != ""):
+                local_path = sys.argv[2]
+                create_map(local_path)
+                map_elements = read_from_disk('map_elements_serialized.bin')
+                print(map_elements)
+        except:
+            print("Local path not found. Insert -create_map <local_path>")
             
 
-#     # Debo chequear que el mapa este creado antes de cargar elementos o crear un viaje
-#     if(os.path.isfile('map_serialized.bin')):
+    # Debo chequear que el mapa este creado antes de cargar elementos o crear un viaje
+    if(os.path.isfile('map_serialized.bin')):
 
-#         if(sys.argv[1] == "-load_fix_element"): 
-#             try:
-#                 if (sys.argv[2] != "" and sys.argv[3] != ""):
-#                     name_terminal_input = sys.argv[2]
-#                     address_terminal_input = sys.argv[3]
-#                     load_fix_element(name_terminal_input,address_terminal_input)
-#             except:
-#                 print("Error. You must type: -load_fix_element <element_name> <address>")
+        if(sys.argv[1] == "-load_fix_element"): 
+            try:
+                if (sys.argv[2] != "" and sys.argv[3] != ""):
+                    name_terminal_input = sys.argv[2]
+                    address_terminal_input = sys.argv[3]
+                    load_fix_element(name_terminal_input,address_terminal_input)
+                    map_elements = read_from_disk('map_elements_serialized.bin')
+                    print(map_elements)
+            except:
+                print("Error. You must type: -load_fix_element <element_name> <address>")
 
-#         if(sys.argv[1] == "-load_movil_element"):
-#             try:
-#                 if (sys.argv[2] != "" and sys.argv[3] != "" and sys.argv[4] != ""):
-#                     name_terminal_input = sys.argv[2]
-#                     address_terminal_input = sys.argv[3]
-#                     amount_terminal_input = sys.argv[4]
-#                     try:
-#                         load_movil_element(name_terminal_input,address_terminal_input,amount_terminal_input)
-#                     except:
-#                         print('error en la funcion')
-#             except:
-#                 print("Error. You must type: -load_movil_element <element_name> <address> <amount>")
+        if(sys.argv[1] == "-load_movil_element"):
+            try:
+                if (sys.argv[2] != "" and sys.argv[3] != "" and sys.argv[4] != ""):
+                    name_terminal_input = sys.argv[2]
+                    address_terminal_input = sys.argv[3]
+                    amount_terminal_input = int(sys.argv[4])
+                    load_movil_element(name_terminal_input,address_terminal_input,amount_terminal_input)
+                    map_elements = read_from_disk('map_elements_serialized.bin')
+                    print(map_elements)
+            except:
+                print("Error. You must type: -load_movil_element <element_name> <address> <amount>")
 
-#         if(sys.argv[1] == "-create_trip"):
-#             print('creo viaje')
+        if(sys.argv[1] == "-create_trip"):
+            print('creo viaje')
 
-#     else:
-#         print("You must create a map first. Insert -create_map <local_path> to start.")
+    else:
+        print("You must create a map first. Insert -create_map <local_path> to start.")
 
-# except IndexError:
-#     print("Insert -create_map <local_path> to start.")
+except IndexError:
+    print("Insert -create_map <local_path> to start.")
