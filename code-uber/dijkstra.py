@@ -25,7 +25,7 @@ def dijkstra(G, s):
 
 def calculate_path(G):
     Discver_sorted = {k: v for k, v in sorted(G.vertices_list.items(), key=lambda x: [int(c) if c.isdigit() else c for c in re.split('(\d+)', x[0])])}
-    print(Discver_sorted)
+    #print(Discver_sorted)
     verObj_list = list(Discver_sorted.values())
     #print(verObj_list)
     #Creo la matriz |V| x |V|
