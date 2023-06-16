@@ -1,7 +1,7 @@
 from uber import *
 
 #Determina los vehiculos más cercanos a una persona
-def create_trip(map,person,location):
+def create_trip(person,location):
 
     map_elements = read_from_disk('map_elements_serialized.bin')
 
@@ -15,32 +15,66 @@ def create_trip(map,person,location):
         map_cars = {clave: valor for clave, valor in map_elements.items() if clave.startswith('C')} #Extraigo el diccionario de autos
         map_cars_key = list(map_cars.keys())
         #Elimina de la lista aquellos vehiculos que no se pueden pagar
-        for car in map_cars_key:
-            if map_elements[car]['amount'] > map_elements[person]['amount']:
-                map_cars.pop(car)
+        #for car in map_cars_key:
+            #if map_elements[car]['amount'] > map_elements[person]['amount']:
+                #map_cars.pop(car)
         
         #A los vehiculos restantes les obtengo su vertice referencia
         cars_ref = [] #Almacenara tuplas (vehiculos,vertices)
         for car in map_cars_key:
-            car_vertexpair = (map_elements[car]['address'][0][0],map_elements[car]['address'][1][0])
+            car_vertexpair = (map_elements[car]['address'][0][0],map_elements[car]['address'][1][0])  
             cars_ref.append([car,car_vertex_ref(map_elements,car,car_vertexpair)])
-        #print(cars_ref)
 
         path_matrix = read_from_disk('path_matrix_serialized.bin') #Leo de memoria la matriz de caminos
-        print(person_vertex)
         #Veo las distancias de los caminos correspondientes a la referencia de los autos
-        distance_list = []
+        valueperson_to_ref = calcule_ref(map_elements[person],person_vertex)
         for v in cars_ref:
-            v.append(path_matrix[person_vertex-1][v[1]-1][0])
+            car_vertexpair = (map_elements[v[0]]['address'][0][0],map_elements[v[0]]['address'][1][0])
+            valuecar_to_ref = calcule_ref(map_elements[v[0]], car_vertex_ref(map_elements,v[0],car_vertexpair))
+            v.append(path_matrix[person_vertex-1][v[1]-1][0] + valuecar_to_ref + valueperson_to_ref)
         cars_ref = sorted(cars_ref, key=lambda x: x[2])
-        #print(path_matrix)
-        print(cars_ref)
-        #print(path_matrix[9])
 
+        payment = False
+        #Devolucion de autos más cercanos
+        #Calculo del costo
+        for i in range(0,len(cars_ref)):
+            costo = (cars_ref[i][2] + map_elements[cars_ref[i][0]]['amount'])/4
+            if costo >= map_elements[person]['amount'] and i==0:
+                print('No posee suficiente dinero para un viaje')
+                break
+            elif costo >= map_elements[person]['amount']:
+                break
+            elif i+1 == 4:
+                break
+            else:
+                payment = True
+                print(f"{i+1}.Auto {cars_ref[i][0]}: distancia {cars_ref[i][2]}, costo: {costo}")
+        
+        if payment:
+            minpath = []
+            pair_vertex = (map_elements[location]['address'][0][0],map_elements[location]['address'][1][0])
+            location_vertex = person_vertex_ref(map_elements,location,pair_vertex)
+            #print(location_vertex)
+            #print(cars_ref)
+            minpath.append(location_vertex)
+            nextVertex = path_matrix[person_vertex-1][location_vertex-1][1]
+            while nextVertex != None:
+                minpath.append(nextVertex.key)
+                nextVertex = path_matrix[person_vertex-1][nextVertex.key-1][1]
+            print('Recorrido más corto para llegar a destino a través de las esquinas:')
+            print(minpath)
 
     except:
         print(f'not person {person} in map')
 
+def calcule_ref(element,reference):
+    uber_map = read_from_disk('map_serialized.bin')
+
+    if uber_map.vertices_list[element['address'][0][0]].key == reference:
+        return  element['address'][0][1]
+    elif uber_map.vertices_list[element['address'][1][0]].key == reference:
+        return element['address'][1][1]
+    
 
 def person_vertex_ref(map_elements,person,pair_vertex):
     #Tomo el mapa de memoria
