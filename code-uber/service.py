@@ -249,8 +249,20 @@ def create_trip(person,location):
         
         if payment:
             minpath = []
+
+            if len(location)>3:
+                
+                destiny_address = parse_address_input(location)
+                uber_map = read_from_disk('map_serialized.bin')
+                if check_element_address(uber_map,destiny_address):
+                    virtual_location = 'destiny'
+                    map_elements[virtual_location] = {'address':destiny_address}
+                    write_to_disk(map_elements,'map_elemets')
+                    location = virtual_location
             pair_vertex = (map_elements[location]['address'][0][0],map_elements[location]['address'][1][0])
             location_vertex = person_vertex_ref(map_elements,location,pair_vertex)
+        
+
             #print(location_vertex)
             #print(cars_ref)
             minpath.append(location_vertex)
