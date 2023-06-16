@@ -24,7 +24,7 @@ from service import *
 #print(uber_map.vertices_list[map_cars['C1']['address'][0][0]].key) #Esto me permitira buscar las filas de la matriz
 #print(uber_map.draw_graph())
 #uber_map.draw_graph()
-#create_trip(uber_map,'P1','H1')
+create_trip(uber_map,'P1','H1')
 #print(uber_map.vertices_list)
 #print(uber_map.vertices_list)
 

@@ -221,7 +221,6 @@ try:
             print("Local path not found. Insert -create_map <local_path>")
             
 
-    # Debo chequear que el mapa este creado antes de cargar elementos o crear un viaje
     if(os.path.isfile('map_serialized.bin')):
 
         if(sys.argv[1] == "-load_fix_element"): 
@@ -248,7 +247,13 @@ try:
                 print("Error. You must type: -load_movil_element <element_name> <address> <amount>")
 
         if(sys.argv[1] == "-create_trip"):
-            print('creo viaje')
+            try:
+                if (sys.argv[2] != "" and sys.argv[3] != ""):
+                    person_terminal_input = sys.argv[2]
+                    address_or_element_terminal_input = sys.argv[3]
+                    print('creo viaje')
+            except:
+                print("Error. You must type: -create_trip <person> <address/element>")
 
     else:
         print("You must create a map first. Insert -create_map <local_path> to start.")
