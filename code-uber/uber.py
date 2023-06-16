@@ -30,8 +30,6 @@ try:
                     address_terminal_input = sys.argv[3]
                     amount_terminal_input = int(sys.argv[4])
                     load_movil_element(name_terminal_input,address_terminal_input,amount_terminal_input)
-                    map_elements = read_from_disk('map_elements_serialized.bin')
-                    print(map_elements)
             except:
                 print("Error. You must type: -load_movil_element <element_name> <address> <amount>")
 

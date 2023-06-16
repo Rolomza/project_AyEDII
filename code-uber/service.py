@@ -200,21 +200,17 @@ def check_element_address(map,address):
 
 def create_trip(person,location):
 
+    uber_map = read_from_disk('map_serialized.bin')
     map_elements = read_from_disk('map_elements_serialized.bin')
 
     #Determinar si la persona esta en el mapa
-    #print(map_elements[person])
-    try:
+    if (person in map_elements):
         pair_vertex = (map_elements[person]['address'][0][0],map_elements[person]['address'][1][0])
         person_vertex = person_vertex_ref(map_elements,person,pair_vertex) #Toma el vertice referente a la persona
         
         #filtro los vehiculos
         map_cars = {clave: valor for clave, valor in map_elements.items() if clave.startswith('C')} #Extraigo el diccionario de autos
         map_cars_key = list(map_cars.keys())
-        #Elimina de la lista aquellos vehiculos que no se pueden pagar
-        #for car in map_cars_key:
-            #if map_elements[car]['amount'] > map_elements[person]['amount']:
-                #map_cars.pop(car)
         
         #A los vehiculos restantes les obtengo su vertice referencia
         cars_ref = [] #Almacenara tuplas (vehiculos,vertices)
@@ -251,9 +247,7 @@ def create_trip(person,location):
             minpath = []
 
             if len(location)>3:
-                
                 destiny_address = parse_address_input(location)
-                uber_map = read_from_disk('map_serialized.bin')
                 if check_element_address(uber_map,destiny_address):
                     virtual_location = 'destiny'
                     map_elements[virtual_location] = {'address':destiny_address}
@@ -262,9 +256,6 @@ def create_trip(person,location):
             pair_vertex = (map_elements[location]['address'][0][0],map_elements[location]['address'][1][0])
             location_vertex = person_vertex_ref(map_elements,location,pair_vertex)
         
-
-            #print(location_vertex)
-            #print(cars_ref)
             minpath.append(location_vertex)
             nextVertex = path_matrix[person_vertex-1][location_vertex-1][1]
             while nextVertex != None:
@@ -273,10 +264,31 @@ def create_trip(person,location):
             print('Recorrido más corto para llegar a destino a través de las esquinas:')
             print(minpath)
 
-        # 
+            travel_accepted = input("Desea aceptar el viaje? si/no: ")
+            if (travel_accepted == 'si'):
+                # Devolver lista de los 3 autos para elegir
+                cars_available = []
+                for i in range(len(cars_ref)):
+                    if i < 3:
+                        cars_available.append(cars_ref[i][0])
+                    else:
+                        break
+                selected_car = input(f"Que auto desea elegir:  {cars_available}")
+                if selected_car == cars_available[0]:
+                    print(f"Ha seleccionado el auto {cars_available[0]}")
+                if selected_car == cars_available[1]:
+                    print(f"Ha seleccionado el auto {cars_available[1]}")
+                if selected_car == cars_available[2]:
+                    print(f"Ha seleccionado el auto {cars_available[2]}")
+            else:
+                return
+            
 
-    except:
-        print(f'not person {person} in map')
+
+
+
+    else:
+        print(f"Error. Person {person} not in map.")
 
 def calcule_ref(element,reference):
     uber_map = read_from_disk('map_serialized.bin')
